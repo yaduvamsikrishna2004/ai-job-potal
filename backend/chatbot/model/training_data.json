@@ -1,0 +1,29 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["hello", "hi", "hey", "good morning", "good evening"],
+      "responses": ["Hello! How can I assist you today?", "Hi there! Need help finding a job or posting one?"]
+    },
+    {
+      "tag": "job_search",
+      "patterns": ["find me a job", "search jobs", "show jobs", "i need a job", "job openings"],
+      "responses": ["Sure! What skills are you looking for?", "Tell me your preferred job role or skill."]
+    },
+    {
+      "tag": "resume_help",
+      "patterns": ["how to improve my resume", "resume help", "fix my resume", "resume tips"],
+      "responses": ["Focus on your key skills, quantify achievements, and keep formatting clean."]
+    },
+    {
+      "tag": "apply_job",
+      "patterns": ["how to apply", "apply for job", "job application"],
+      "responses": ["To apply, go to the job details page and click 'Apply Now'."]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["bye", "thank you", "see you"],
+      "responses": ["Goodbye! Happy to help anytime.", "See you soon!"]
+    }
+  ]
+}

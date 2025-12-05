@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidate Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<h1>Candidate Dashboard</h1>
+
+<!-- Resume Upload -->
+<section class="card">
+    <h2>Upload Resume</h2>
+    <input type="file" id="resumeFile">
+    <button onclick="uploadResume()">Upload</button>
+    <div id="uploadResult"></div>
+</section>
+
+<!-- Resume List -->
+<section class="card">
+    <h2>Your Resumes</h2>
+    <button onclick="loadResumes()">Load My Resumes</button>
+    <div id="resumeList"></div>
+</section>
+
+<script src="../js/candidate.js"></script>
+
+</body>
+</html>

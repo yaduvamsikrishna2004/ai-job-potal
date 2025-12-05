@@ -1,0 +1,10 @@
+Flask
+Flask-Cors
+PyJWT
+sentence-transformers
+torch
+numpy
+scikit-learn
+python-docx
+pdfminer.six
+nltk

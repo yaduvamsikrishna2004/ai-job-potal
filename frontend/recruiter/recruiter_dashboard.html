@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recruiter Dashboard</title>
+    <link rel="stylesheet" href="../css/recruiter.css">
+</head>
+<body>
+
+<h1>Recruiter Dashboard</h1>
+
+<!-- Bulk Upload -->
+<section class="card">
+    <h2>Bulk Resume Upload</h2>
+    <input type="file" id="bulkFiles" multiple>
+    <input type="number" id="bulkJobId" placeholder="Job ID">
+    <button onclick="bulkUpload()">Upload</button>
+    <div id="bulkResult"></div>
+</section>
+
+<!-- Reconciliation -->
+<section class="card">
+    <h2>Reconcile Resumes</h2>
+    <button onclick="reconcileResumes()">Run Reconciliation</button>
+    <div id="reconcileResult"></div>
+</section>
+
+<!-- Unreconciled Resumes -->
+<section class="card">
+    <h2>Unreconciled Resumes</h2>
+    <button onclick="loadUnreconciled()">Load Unreconciled</button>
+    <div id="unreconciledList"></div>
+</section>
+
+<!-- Notify Matched -->
+<section class="card">
+    <h2>Notify Matched Candidates</h2>
+    <button onclick="notifyMatched()">Notify Candidates</button>
+    <div id="notifyResult"></div>
+</section>
+
+<!-- Export -->
+<section class="card">
+    <h2>Export Applications (CSV)</h2>
+    <input type="number" id="exportJobId" placeholder="Job ID">
+    <button onclick="exportCsv()">Download CSV</button>
+</section>
+
+<script src="../js/recruiter.js"></script>
+
+</body>
+</html>

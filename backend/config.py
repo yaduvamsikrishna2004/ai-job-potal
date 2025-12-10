@@ -1,6 +1,3 @@
-"""Configuration for backend (placeholder)."""
-import os
-
-class Config:
-    MONGO_URI = os.getenv("MONGO_URI", "")
-    MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "job_recommendation")
+MONGO_URI = "mongodb+srv://vamsikrishna:vamsi@cluster0.z51pjjx.mongodb.net/?appName=Cluster0"
+DB_NAME = "job_recommendation"
+SECRET_KEY = "a9f2c8f1d4e7b6c2f0a1b3d9e5c7f2a8"

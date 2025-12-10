@@ -1,0 +1,9 @@
+/* Enable Tailwind */
+@import "tailwindcss";
+
+/* Optional: Custom global overrides */
+body {
+  margin: 0;
+  background-color: #f3f4f6; /* Tailwind gray-100 */
+  font-family: system-ui, sans-serif;
+}

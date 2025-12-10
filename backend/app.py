@@ -13,6 +13,7 @@ from recruiter.export_applications import recruiter_export_bp
 from recruiter.reconcile_resumes import reconcile_bp
 from recruiter.unreconciled_resumes import unreconciled_bp
 from recruiter.notify_candidates import notify_bp
+from recruiter.list_jobs import list_jobs_bp
 
 # Candidate blueprints
 from candidate.search_jobs import candidate_search_bp
@@ -54,6 +55,7 @@ app.register_blueprint(candidate_resume_mgmt_bp, url_prefix="/candidate")
 
 # Chatbot
 app.register_blueprint(chatbot_bp, url_prefix="/chatbot")
+app.register_blueprint(list_jobs_bp, url_prefix="/recruiter")
 
 
 @app.route("/")

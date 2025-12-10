@@ -1,50 +1,48 @@
-# backend/auth/auth_routes.py
 from flask import Blueprint, request, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from temp_db import users
+from database.db import users_col
 from utils.jwt_tokens import generate_token
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
-    data = request.json or {}
-    name = data.get("name")
+    data = request.json
     email = data.get("email")
     password = data.get("password")
-    role = data.get("role", "candidate")
+    role = data.get("role")
 
-    if not name or not email or not password:
-        return jsonify({"error": "name, email and password are required"}), 400
+    if users_col.find_one({"email": email}):
+        return jsonify({"error": "User already exists"}), 400
 
-    # duplicate check
-    if any(u for u in users if u["email"].lower() == email.lower()):
-        return jsonify({"error": "Email already exists"}), 400
-
-    user = {
-        "name": name,
-        "email": email.lower(),
-        "password_hashed": generate_password_hash(password),
+    users_col.insert_one({
+        "email": email,
+        "password": generate_password_hash(password),
         "role": role
-    }
-    users.append(user)
+    })
 
-    # For convenience return token on registration
-    token = generate_token(user["email"], user["role"])
+    token = generate_token(email, role)
+
     return jsonify({"message": "Registration successful", "token": token, "role": role}), 201
+
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    data = request.json or {}
-    email = data.get("email")
-    password = data.get("password")
+    data = request.json
+    email = data["email"]
+    password = data["password"]
 
-    if not email or not password:
-        return jsonify({"error": "email and password are required"}), 400
+    user = users_col.find_one({"email": email})
+    if not user:
+        return jsonify({"error": "Invalid email or password"}), 400
 
-    user = next((u for u in users if u["email"].lower() == email.lower()), None)
-    if not user or not check_password_hash(user["password_hashed"], password):
-        return jsonify({"error": "Invalid credentials"}), 401
+    if not check_password_hash(user["password"], password):
+        return jsonify({"error": "Invalid email or password"}), 400
 
-    token = generate_token(user["email"], user["role"])
-    return jsonify({"message": "Login successful", "token": token, "role": user["role"]})
+    token = generate_token(email, user["role"])
+
+    return jsonify({
+        "message": "Login successful",
+        "role": user["role"],
+        "token": token
+    })

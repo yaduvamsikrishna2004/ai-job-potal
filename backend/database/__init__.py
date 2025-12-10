@@ -1,4 +1,1 @@
-"""Database package placeholder."""
-from .db import get_db
-
-__all__ = ["get_db"]
+from .db import client, db, users_col, jobs_col, resumes_col, applications_col

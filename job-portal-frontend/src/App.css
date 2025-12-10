@@ -1,0 +1,16 @@
+/* Enable Tailwind */
+@import "tailwindcss";
+
+/* Optional: App-wide overrides */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3f4f6; /* gray-100 */
+  font-family: system-ui, sans-serif;
+}
+
+/* Ensure full height layout works */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}

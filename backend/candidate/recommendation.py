@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
-from temp_db import jobs, resumes
+from bson import ObjectId
+
+from database.db import resumes_col, jobs_col
 from models.match_model import compute_resume_job_score
 from models.embedding_model import compute_resume_vs_jobs
 
@@ -9,77 +11,94 @@ candidate_recommend_bp = Blueprint("candidate_recommend", __name__)
 def recommend_jobs():
     """
     Input JSON:
-      {
-        "resume_id": 1,
-        "top_n": 5
-      }
+    {
+      "resume_id": "<mongodb_id>",
+      "top_n": 5
+    }
     """
-
     data = request.json
     resume_id = data.get("resume_id")
     top_n = data.get("top_n", 5)
 
-    # Validate resume exists
-    resume_obj = next((r for r in resumes if r["resume_id"] == resume_id), None)
-    if not resume_obj:
+    if not resume_id:
+        return jsonify({"error": "resume_id is required"}), 400
+
+    # ------------------------------------
+    # 1️⃣ Fetch resume from MongoDB
+    # ------------------------------------
+    try:
+        resume_doc = resumes_col.find_one({"_id": ObjectId(resume_id)})
+    except:
+        return jsonify({"error": "Invalid resume_id"}), 400
+
+    if not resume_doc:
         return jsonify({"error": "Resume not found"}), 404
 
-    resume_text = resume_obj["parsed"]["raw_text"]
+    resume_text = resume_doc.get("parsed_text") or resume_doc.get("parsed", {}).get("raw_text")
+    if not resume_text:
+        return jsonify({"error": "Resume has no parsed text"}), 400
 
-    if not jobs:
+    # ------------------------------------
+    # 2️⃣ Get all jobs from MongoDB
+    # ------------------------------------
+    job_list = []
+    for job in jobs_col.find():
+        job["_id"] = str(job["_id"])
+        job["job_id"] = job["_id"]   # unify field so model code stays unchanged
+        job_list.append(job)
+
+    if len(job_list) == 0:
         return jsonify({"error": "No jobs available"}), 404
 
-    # -------------------------
-    # 1️⃣ TF-IDF based scoring
-    # -------------------------
+    # ------------------------------------
+    # 3️⃣ TF-IDF based scoring
+    # ------------------------------------
     tfidf_scores = []
-    for job in jobs:
-        score = compute_resume_job_score(resume_text, job["description"])
+    for job in job_list:
+        description = job.get("description", "")
+        tfidf_score = compute_resume_job_score(resume_text, description)
+
         tfidf_scores.append({
             "job_id": job["job_id"],
             "title": job["title"],
-            "score_tfidf": score
+            "tfidf_score": tfidf_score
         })
 
-    # -------------------------
-    # 2️⃣ Embedding similarity
-    # -------------------------
-    embed_scores = compute_resume_vs_jobs(resume_text, jobs, top_n=len(jobs))
-
-    # Convert embedding list to map for fast lookup
+    # ------------------------------------
+    # 4️⃣ Embedding similarity scoring
+    # ------------------------------------
+    embed_scores = compute_resume_vs_jobs(resume_text, job_list, top_n=len(job_list))
     embed_map = {item["job_id"]: item["embedding_score"] for item in embed_scores}
 
-    # -------------------------
-    # 3️⃣ Combine scores
-    # -------------------------
-    final_scores = []
+    # ------------------------------------
+    # 5️⃣ Combine TF-IDF + Embeddings
+    # ------------------------------------
+    final_list = []
     for item in tfidf_scores:
         job_id = item["job_id"]
 
-        tfidf_score = item["score_tfidf"]
+        tfidf_score = item["tfidf_score"]
         embed_score = embed_map.get(job_id, 0)
 
-        # Weighted hybrid score
-        final = round(0.6 * embed_score + 0.4 * tfidf_score, 2)
+        final_score = round(0.6 * embed_score + 0.4 * tfidf_score, 2)
 
-        # Add job info
-        job = next(j for j in jobs if j["job_id"] == job_id)
+        job = next(j for j in job_list if j["job_id"] == job_id)
 
-        final_scores.append({
+        final_list.append({
             "job_id": job_id,
             "title": job["title"],
-            "description": job["description"],
-            "skills": job["skills"],
+            "description": job.get("description", ""),
+            "skills": job.get("skills", []),
             "tfidf_score": tfidf_score,
             "embedding_score": embed_score,
-            "final_score": final
+            "final_score": final_score
         })
 
-    # Sort by final hybrid score
-    final_scores.sort(key=lambda x: -x["final_score"])
+    # Sort & return only top_n
+    final_list.sort(key=lambda x: -x["final_score"])
 
     return jsonify({
         "resume_id": resume_id,
         "top_n": top_n,
-        "recommendations": final_scores[:top_n]
+        "recommendations": final_list[:top_n]
     })

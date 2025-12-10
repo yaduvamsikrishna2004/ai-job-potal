@@ -8,3 +8,5 @@ scikit-learn
 python-docx
 pdfminer.six
 nltk
+pymongo
+dnspython

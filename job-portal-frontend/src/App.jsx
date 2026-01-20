@@ -1,9 +1,11 @@
 // src/App.jsx
-import { Routes, Route } from "react-router-dom";
-import AppLayout from "./layout/AppLayout";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Auth pages
+import ProtectedRoute from "./components/ProtectedRoute";
+import AppLayout from "./layout/AppLayout";
+
+// Public pages
+import Home from "./pages/Home";        // Landing page
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -19,25 +21,46 @@ import ScreenCandidates from "./pages/recruiter/ScreenCandidates";
 
 export default function App() {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <BrowserRouter>
+      <Routes>
+        {/* ================= PUBLIC ROUTES ================= */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      {/* Protected routes */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
-          {/* Candidate routes */}
-          <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
-          <Route path="/candidate/upload" element={<UploadResume />} />
-          <Route path="/candidate/recommend" element={<Recommendations />} />
+        {/* ================= PROTECTED ROUTES ================= */}
+        <Route element={<ProtectedRoute redirectTo="/login" />}>
+          <Route element={<AppLayout />}>
+            {/* Candidate */}
+            <Route
+              path="/candidate/dashboard"
+              element={<CandidateDashboard />}
+            />
+            <Route
+              path="/candidate/upload"
+              element={<UploadResume />}
+            />
+            <Route
+              path="/candidate/recommend"
+              element={<Recommendations />}
+            />
 
-          {/* Recruiter routes */}
-          <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
-          <Route path="/recruiter/post-job" element={<PostJob />} />
-          <Route path="/recruiter/screen" element={<ScreenCandidates />} />
+            {/* Recruiter */}
+            <Route
+              path="/recruiter/dashboard"
+              element={<RecruiterDashboard />}
+            />
+            <Route
+              path="/recruiter/post-job"
+              element={<PostJob />}
+            />
+            <Route
+              path="/recruiter/screen"
+              element={<ScreenCandidates />}
+            />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </BrowserRouter>
   );
 }

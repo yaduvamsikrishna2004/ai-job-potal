@@ -1,10 +1,6 @@
-Flask
-Flask-Cors
-PyJWT
+flask
+flask-cors
+pymongo
 sentence-transformers
-torch
-numpy
 scikit-learn
-python-docx
-pdfminer.six
-nltk
+numpy

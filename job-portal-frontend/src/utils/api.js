@@ -1,8 +1,10 @@
 // src/utils/api.js
-const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:5000";
 
+// Vite uses import.meta.env, not process.env
+const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:5000";
+
+// Retrieve token from possible storage locations
 function getToken() {
-  // look in a few common places
   return (
     localStorage.getItem("token") ||
     localStorage.getItem("authToken") ||
@@ -14,33 +16,43 @@ function getToken() {
 export async function apiFetch(path, opts = {}) {
   const token = getToken();
 
-  const headers = opts.headers ? { ...opts.headers } : {};
+  // Merge headers safely
+  const headers = {
+    ...(opts.headers || {}),
+  };
+
+  // Add Authorization header only if missing
   if (token && !headers.Authorization && !headers.authorization) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  // Build final request
+  const response = await fetch(`${API_BASE}${path}`, {
     ...opts,
     headers,
   });
 
-  const contentType = res.headers.get("content-type") || "";
-  let body = null;
-  if (contentType.includes("application/json")) {
-    body = await res.json();
+  // Try reading JSON if possible
+  let body;
+  const type = response.headers.get("content-type") || "";
+
+  if (type.includes("application/json")) {
+    body = await response.json();
   } else {
+    // fallback to text
     try {
-      body = await res.text();
+      body = await response.text();
     } catch {
       body = null;
     }
   }
 
-  if (!res.ok) {
-    const err = new Error(body?.error || body?.message || "API error");
-    err.status = res.status;
-    err.body = body;
-    throw err;
+  // Standardized error handling
+  if (!response.ok) {
+    const error = new Error(body?.error || body?.message || "API error");
+    error.status = response.status;
+    error.body = body;
+    throw error;
   }
 
   return body;

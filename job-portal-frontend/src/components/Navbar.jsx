@@ -1,57 +1,111 @@
 // src/components/Navbar.jsx
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [open, setOpen] = useState(false);
 
-  const role = localStorage.getItem("role") || "guest";
+  const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
 
-  const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
-    if (!confirmLogout) return;
-
+  const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     navigate("/login");
   };
 
-  const getPageTitle = () => {
-    if (location.pathname.includes("candidate")) return "Candidate Dashboard";
-    if (location.pathname.includes("recruiter")) return "Recruiter Dashboard";
-    return "Dashboard";
-  };
+  if (!token) return null; // hide navbar on public pages
+
+  const dashboardPath =
+    role === "recruiter"
+      ? "/recruiter/dashboard"
+      : "/candidate/dashboard";
+
+  const avatarLetter = role ? role[0].toUpperCase() : "U";
 
   return (
-    <div className="bg-white border-b px-6 py-4 flex items-center justify-between shadow-sm">
-      {/* Page Title */}
-      <h1 className="text-2xl font-semibold text-gray-800">
-        {getPageTitle()}
-      </h1>
+    <header className="bg-white border-b shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
-      {/* Right Section */}
-      <div className="flex items-center gap-4">
-        {/* Role Badge */}
-        <span
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
-            role === "recruiter"
-              ? "bg-purple-100 text-purple-700"
-              : role === "candidate"
-              ? "bg-blue-100 text-blue-700"
-              : "bg-gray-200 text-gray-700"
-          }`}
-        >
-          {role.toUpperCase()}
-        </span>
+        {/* LOGO */}
+        <Link to={dashboardPath} className="text-2xl font-bold text-blue-600">
+          AI Job Portal
+        </Link>
 
-        {/* Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-        >
-          Logout
-        </button>
+        {/* RIGHT SIDE */}
+        <div className="relative flex items-center gap-4">
+
+          {/* ROLE BADGE */}
+          <span className="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700 capitalize">
+            {role}
+          </span>
+
+          {/* AVATAR */}
+          <div
+            onClick={() => setOpen(!open)}
+            className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center cursor-pointer font-bold"
+          >
+            {avatarLetter}
+          </div>
+
+          {/* DROPDOWN */}
+          {open && (
+            <div className="absolute right-0 top-12 w-48 bg-white border rounded-lg shadow-lg z-50">
+              <Link
+                to={dashboardPath}
+                className="block px-4 py-2 hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+
+              {role === "candidate" && (
+                <>
+                  <Link
+                    to="/candidate/upload"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Upload Resume
+                  </Link>
+                  <Link
+                    to="/candidate/recommend"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Recommendations
+                  </Link>
+                </>
+              )}
+
+              {role === "recruiter" && (
+                <>
+                  <Link
+                    to="/recruiter/post-job"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Post Job
+                  </Link>
+                  <Link
+                    to="/recruiter/screen"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Screen Candidates
+                  </Link>
+                </>
+              )}
+
+              <hr />
+
+              <button
+                onClick={logout}
+                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </header>
   );
 }

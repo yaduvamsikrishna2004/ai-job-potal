@@ -1,42 +1,24 @@
-import random
+import os
 import json
-import numpy as np
-import re
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
+import random
 
 class ChatbotModel:
     def __init__(self):
-        self.intents = json.load(open("chatbot/model/training_data.json"))
-        self.vectorizer = CountVectorizer()
-        self.model = MultinomialNB()
+        base_dir = os.path.dirname(__file__)
+        intents_path = os.path.join(base_dir, "training_data.json")
 
-        self.train()
+        with open(intents_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-    def clean_text(self, text):
-        text = text.lower()
-        text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
-        return text
+        # store ONLY the intents list
+        self.intents = data.get("intents", [])
 
-    def train(self):
-        patterns = []
-        labels = []
+    def get_response(self, user_message: str):
+        user_message = user_message.lower()
 
-        for intent in self.intents["intents"]:
+        for intent in self.intents:
             for pattern in intent["patterns"]:
-                patterns.append(self.clean_text(pattern))
-                labels.append(intent["tag"])
+                if pattern.lower() in user_message:
+                    return random.choice(intent["responses"])
 
-        X = self.vectorizer.fit_transform(patterns)
-        self.model.fit(X, labels)
-
-    def predict_intent(self, message):
-        cleaned = self.clean_text(message)
-        X = self.vectorizer.transform([cleaned])
-        return self.model.predict(X)[0]
-
-    def get_response(self, tag):
-        for intent in self.intents["intents"]:
-            if intent["tag"] == tag:
-                return random.choice(intent["responses"])
-        return "I’m not sure I understand. Can you rephrase?"
+        return "Sorry, I didn’t understand that. Can you rephrase?"

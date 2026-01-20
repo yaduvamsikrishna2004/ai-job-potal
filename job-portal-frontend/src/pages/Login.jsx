@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,19 +12,24 @@ export default function Login() {
   const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
   // ------------------------------------------
-  // Auto-redirect if user already logged in
+  // Auto-redirect if already logged in
   // ------------------------------------------
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
 
     if (token && role) {
-      navigate(role === "candidate" ? "/candidate/dashboard" : "/recruiter/dashboard");
+      navigate(
+        role === "candidate"
+          ? "/candidate/dashboard"
+          : "/recruiter/dashboard",
+        { replace: true }
+      );
     }
   }, [navigate]);
 
   // ------------------------------------------
-  // Handle Login Form Submission
+  // Handle Login
   // ------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,18 +51,18 @@ export default function Login() {
         return;
       }
 
-      // Save token & role
+      // Save auth data
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
 
-      // Redirect user
+      // Redirect based on role
       navigate(
         data.role === "candidate"
           ? "/candidate/dashboard"
           : "/recruiter/dashboard"
       );
-    } catch (err) {
-      setError("Network error. Please try again.");
+    } catch {
+      setError("Server not reachable. Try again later.");
     }
 
     setLoading(false);
@@ -69,9 +74,14 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="bg-white p-8 shadow-xl rounded-lg w-full max-w-md space-y-5 border"
       >
+        {/* Title */}
         <h2 className="text-3xl font-bold text-center text-blue-700">
-          Job Portal Login
+          Login to AI Job Portal
         </h2>
+
+        <p className="text-center text-gray-500 text-sm">
+          Find jobs smarter with AI
+        </p>
 
         {/* Email */}
         <div>
@@ -98,32 +108,41 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <span
-              className="absolute right-3 top-2.5 cursor-pointer text-gray-500"
+            <button
+              type="button"
+              className="absolute right-3 top-2.5 text-gray-500"
               onClick={() => setShowPass(!showPass)}
             >
               {showPass ? "🙈" : "👁️"}
-            </span>
+            </button>
           </div>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded text-white text-lg ${
+          className={`w-full py-2 rounded text-white text-lg transition ${
             loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        {/* Error Message */}
+        {/* Error */}
         {error && (
           <div className="text-red-700 bg-red-100 border border-red-300 p-2 rounded text-center">
             {error}
           </div>
         )}
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-600">
+          New here?{" "}
+          <Link to="/register" className="text-blue-600 font-semibold">
+            Create an account
+          </Link>
+        </p>
       </form>
     </div>
   );

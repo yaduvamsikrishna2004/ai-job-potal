@@ -1,3 +1,23 @@
+# View candidate's job applications
+from flask import Blueprint, jsonify
+from database.db import applications_col
+from utils.auth_middleware import token_required
+
+candidate_applications_bp = Blueprint("candidate_applications", __name__)
+
+@candidate_applications_bp.route("/applications", methods=["GET"])
+@token_required(allowed_roles=["candidate"])
+def get_applications(current_user):
+    """
+    Return all job applications for the authenticated candidate.
+    """
+    email = current_user.get("email")
+    apps = list(applications_col.find({"candidate_email": email}))
+    for app in apps:
+        app["_id"] = str(app["_id"])
+        if "job_id" in app:
+            app["job_id"] = str(app["job_id"])
+    return jsonify({"count": len(apps), "applications": apps})
 from flask import Blueprint, request, jsonify
 from bson import ObjectId
 from datetime import datetime
@@ -54,8 +74,13 @@ def apply_job(current_user):
     if not resume:
         return jsonify({"error": "Resume not found for this user"}), 404
 
+
     resume_text = resume.get("parsed_text") or resume.get("parsed", {}).get("raw_text", "")
     job_text = job.get("description", "")
+
+    # Ensure job dict has job_id for embedding model compatibility
+    job = dict(job)
+    job["job_id"] = str(job["_id"])
 
     # --------------------------------------------------
     # 3️⃣ Compute hybrid fit score

@@ -1,25 +1,36 @@
 // src/pages/candidate/Dashboard.jsx
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiFetch } from "../../utils/api";
 
 export default function CandidateDashboard() {
   const [resumeCount, setResumeCount] = useState(0);
   const [recommendations, setRecommendations] = useState(0);
   const [latestResumes, setLatestResumes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [applications, setApplications] = useState(0);
+  const [error, setError] = useState("");
 
-  // 🔸 MOCK DATA (replace with API later)
+  // Load from localStorage (mock for now)
   useEffect(() => {
-    setResumeCount(2);
-    setRecommendations(5);
-    setLatestResumes([
-      { name: "Resume_Jan2025.pdf", uploadedAt: "12 Jan 2025" },
-      { name: "Resume_Project.pdf", uploadedAt: "03 Jan 2025" },
-    ]);
+    setLoading(true);
+    setError("");
+    const resumes = JSON.parse(localStorage.getItem("my_resumes") || "[]");
+    setResumeCount(resumes.length);
+    setLatestResumes(resumes.slice(-2));
+    setRecommendations(Number(localStorage.getItem("recommendation_count")) || 0);
+    // Fetch applications count from backend
+    apiFetch("/candidate/applications")
+      .then((data) => {
+        setApplications((data.applications || []).length);
+      })
+      .catch(() => setApplications(0))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="space-y-8">
-
       {/* ================= PAGE HEADER ================= */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800">
@@ -34,17 +45,17 @@ export default function CandidateDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl shadow">
           <p className="text-sm text-gray-500">Uploaded Resumes</p>
-          <p className="text-3xl font-bold mt-2">{resumeCount}</p>
+          <p className="text-3xl font-bold mt-2">{loading ? "-" : resumeCount}</p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow">
           <p className="text-sm text-gray-500">Job Recommendations</p>
-          <p className="text-3xl font-bold mt-2">{recommendations}</p>
+          <p className="text-3xl font-bold mt-2">{loading ? "-" : recommendations}</p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow">
           <p className="text-sm text-gray-500">Applications Submitted</p>
-          <p className="text-3xl font-bold mt-2">0</p>
+          <p className="text-3xl font-bold mt-2">{loading ? "-" : applications}</p>
         </div>
       </div>
 
@@ -73,25 +84,21 @@ export default function CandidateDashboard() {
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-xl font-bold mb-4">Recent Resume Uploads</h2>
 
-        {latestResumes.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : latestResumes.length === 0 ? (
           <p className="text-gray-500">No resumes uploaded yet.</p>
         ) : (
           <ul className="space-y-3">
             {latestResumes.map((res, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center border-b pb-2"
-              >
-                <span className="text-gray-700">{res.name}</span>
-                <span className="text-sm text-gray-500">
-                  {res.uploadedAt}
-                </span>
+              <li key={index} className="flex justify-between items-center border-b pb-2">
+                <span>{res.name}</span>
+                <span className="text-sm text-gray-400">{res.uploadedAt}</span>
               </li>
             ))}
           </ul>
         )}
       </div>
-
     </div>
   );
 }

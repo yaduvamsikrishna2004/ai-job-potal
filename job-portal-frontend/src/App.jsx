@@ -1,3 +1,5 @@
+import ResumeScreening from "./pages/services/ResumeScreening";
+import JobRecommendation from "./pages/services/JobRecommendation";
 // src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -13,11 +15,13 @@ import Register from "./pages/Register";
 import CandidateDashboard from "./pages/candidate/Dashboard";
 import UploadResume from "./pages/candidate/UploadResume";
 import Recommendations from "./pages/candidate/Recommendations";
+import ApplyHistory from "./pages/candidate/ApplyHistory";
 
 // Recruiter pages
 import RecruiterDashboard from "./pages/recruiter/Dashboard";
 import PostJob from "./pages/recruiter/PostJob";
 import ScreenCandidates from "./pages/recruiter/ScreenCandidates";
+import BulkUpload from "./pages/recruiter/BulkUpload";
 
 export default function App() {
   return (
@@ -27,6 +31,10 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Services Pages */}
+        <Route path="/services/resume-screening" element={<ResumeScreening />} />
+        <Route path="/services/job-recommendation" element={<JobRecommendation />} />
 
         {/* ================= PROTECTED ROUTES ================= */}
         <Route element={<ProtectedRoute redirectTo="/login" />}>
@@ -44,19 +52,26 @@ export default function App() {
               path="/candidate/recommend"
               element={<Recommendations />}
             />
-
+            <Route
+              path="/candidate/applications"
+              element={<ApplyHistory />}
+            />
             {/* Recruiter */}
             <Route
               path="/recruiter/dashboard"
-              element={<RecruiterDashboard />}
+              element={<ProtectedRoute role="recruiter"><RecruiterDashboard /></ProtectedRoute>}
             />
             <Route
               path="/recruiter/post-job"
-              element={<PostJob />}
+              element={<ProtectedRoute role="recruiter"><PostJob /></ProtectedRoute>}
             />
             <Route
               path="/recruiter/screen"
-              element={<ScreenCandidates />}
+              element={<ProtectedRoute role="recruiter"><ScreenCandidates /></ProtectedRoute>}
+            />
+            <Route
+              path="/recruiter/bulk-upload"
+              element={<ProtectedRoute role="recruiter"><BulkUpload /></ProtectedRoute>}
             />
           </Route>
         </Route>

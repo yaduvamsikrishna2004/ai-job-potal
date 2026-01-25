@@ -57,10 +57,10 @@ export default function Home() {
         Instantly rank resumes using AI-powered skill and experience matching.
       </p>
       <Link
-        to="/login"
+        to="/services/resume-screening"
         className="text-blue-600 font-semibold hover:underline"
       >
-        Screen Resumes →
+        Learn More →
       </Link>
     </div>
 
@@ -74,10 +74,10 @@ export default function Home() {
         Get personalized job recommendations based on your resume.
       </p>
       <Link
-        to="/login"
+        to="/services/job-recommendation"
         className="text-blue-600 font-semibold hover:underline"
       >
-        Find Jobs →
+        Learn More →
       </Link>
     </div>
 

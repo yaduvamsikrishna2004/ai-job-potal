@@ -39,6 +39,7 @@ def post_job(current_user):
 
     result = jobs_col.insert_one(new_job)
     new_job["_id"] = str(result.inserted_id)
+    new_job["job_id"] = new_job["_id"]
 
     return jsonify({
         "message": "Job posted!",

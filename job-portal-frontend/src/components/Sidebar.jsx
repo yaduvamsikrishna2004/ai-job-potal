@@ -27,13 +27,14 @@ export default function Sidebar() {
             <NavLink to="/candidate/dashboard" className={linkStyle}>
               Dashboard
             </NavLink>
-
             <NavLink to="/candidate/upload" className={linkStyle}>
               Upload Resume
             </NavLink>
-
             <NavLink to="/candidate/recommend" className={linkStyle}>
               Recommendations
+            </NavLink>
+            <NavLink to="/candidate/applications" className={linkStyle}>
+              My Applications
             </NavLink>
           </>
         )}

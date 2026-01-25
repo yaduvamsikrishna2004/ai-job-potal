@@ -44,7 +44,7 @@ def ensure_job_embeddings(job_list):
     """
     global _CACHE_META, _JOB_EMBEDDINGS_INDEX
 
-    job_ids = tuple([int(j["job_id"]) for j in job_list])
+    job_ids = tuple([str(j["job_id"]) for j in job_list])
     cached_ids = _CACHE_META.get("job_ids")
 
     # rebuild cache if job list changed

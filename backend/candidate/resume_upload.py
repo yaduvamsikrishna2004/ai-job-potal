@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, request, jsonify
 from database.db import resumes_col
-from models.resume_parser import parse_resume
+from models.resume_parser import parse_resume, extract_text
 from utils.auth_middleware import token_required, role_required
 
 candidate_resume_upload_bp = Blueprint("candidate_resume_upload", __name__)
@@ -23,8 +23,13 @@ def upload_resume(current_user):
     if ext not in allowed_ext:
         return jsonify({"error": "Unsupported file type"}), 400
 
-    # Parse resume content
-    parsed_content = parse_resume(file)
+    try:
+        text = extract_text(file)
+        if not text.strip():
+            return jsonify({"error": "Could not extract text from resume. Please upload a valid file."}), 400
+        parsed_content = parse_resume(text)
+    except Exception as e:
+        return jsonify({"error": "Failed to parse resume: " + str(e)}), 400
 
     # Insert into DB
     result = resumes_col.insert_one({

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../utils/api";
 
 export default function Register() {
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,19 +19,11 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const data = await apiFetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, role }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Registration failed");
-        setLoading(false);
-        return;
-      }
 
       // Save token & role
       localStorage.setItem("token", data.token);
@@ -39,12 +31,12 @@ export default function Register() {
 
       // Redirect
       navigate(
-        role === "candidate"
+        (data.role || role) === "candidate"
           ? "/candidate/dashboard"
           : "/recruiter/dashboard"
       );
     } catch (err) {
-      setError("Network error. Please try again.");
+      setError(err.body?.error || "Registration failed");
     }
 
     setLoading(false);

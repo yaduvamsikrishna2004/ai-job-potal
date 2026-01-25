@@ -12,6 +12,9 @@ def register():
     password = data.get("password")
     role = data.get("role")
 
+    if not email or not password or not role:
+        return jsonify({"error": "Missing email, password, or role"}), 400
+
     if users_col.find_one({"email": email}):
         return jsonify({"error": "User already exists"}), 400
 
@@ -29,8 +32,11 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json
-    email = data["email"]
-    password = data["password"]
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "Missing email or password"}), 400
 
     user = users_col.find_one({"email": email})
     if not user:

@@ -15,9 +15,11 @@ from recruiter.unreconciled_resumes import unreconciled_bp
 from recruiter.notify_candidates import notify_bp
 from recruiter.list_jobs import list_jobs_bp
 
+
 # Candidate blueprints
 from candidate.search_jobs import candidate_search_bp
 from candidate.apply_job import candidate_apply_bp
+from candidate.apply_job import candidate_applications_bp
 from candidate.resume_score import candidate_resume_bp
 from candidate.recommendation import candidate_recommend_bp
 from candidate.resume_upload import candidate_resume_upload_bp
@@ -45,9 +47,11 @@ app.register_blueprint(reconcile_bp, url_prefix="/recruiter")
 app.register_blueprint(unreconciled_bp, url_prefix="/recruiter")
 app.register_blueprint(notify_bp, url_prefix="/recruiter")
 
+
 # Candidate
 app.register_blueprint(candidate_search_bp, url_prefix="/candidate")
 app.register_blueprint(candidate_apply_bp, url_prefix="/candidate")
+app.register_blueprint(candidate_applications_bp, url_prefix="/candidate")
 app.register_blueprint(candidate_resume_bp, url_prefix="/candidate")
 app.register_blueprint(candidate_recommend_bp, url_prefix="/candidate")
 app.register_blueprint(candidate_resume_upload_bp, url_prefix="/candidate")

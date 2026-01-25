@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { apiFetch } from "../utils/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,7 +10,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
   // ------------------------------------------
   // Auto-redirect if already logged in
@@ -37,19 +37,11 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const data = await apiFetch("/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Invalid email or password");
-        setLoading(false);
-        return;
-      }
 
       // Save auth data
       localStorage.setItem("token", data.token);
@@ -59,12 +51,12 @@ export default function Login() {
       navigate(
         data.role === "candidate"
           ? "/candidate/dashboard"
-          : "/recruiter/dashboard"
+          : "/recruiter/dashboard",
+        { replace: true }
       );
-    } catch {
-      setError("Server not reachable. Try again later.");
+    } catch (err) {
+      setError(err.body?.error || "Invalid email or password");
     }
-
     setLoading(false);
   };
 

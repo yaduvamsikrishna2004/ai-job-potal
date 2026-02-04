@@ -59,19 +59,19 @@ export default function App() {
             {/* Recruiter */}
             <Route
               path="/recruiter/dashboard"
-              element={<ProtectedRoute role="recruiter"><RecruiterDashboard /></ProtectedRoute>}
+              element={<ProtectedRoute roles={["recruiter"]}><RecruiterDashboard /></ProtectedRoute>}
             />
             <Route
               path="/recruiter/post-job"
-              element={<ProtectedRoute role="recruiter"><PostJob /></ProtectedRoute>}
+              element={<ProtectedRoute roles={["recruiter"]}><PostJob /></ProtectedRoute>}
             />
             <Route
               path="/recruiter/screen"
-              element={<ProtectedRoute role="recruiter"><ScreenCandidates /></ProtectedRoute>}
+              element={<ProtectedRoute roles={["recruiter"]}><ScreenCandidates /></ProtectedRoute>}
             />
             <Route
               path="/recruiter/bulk-upload"
-              element={<ProtectedRoute role="recruiter"><BulkUpload /></ProtectedRoute>}
+              element={<ProtectedRoute roles={["recruiter"]}><BulkUpload /></ProtectedRoute>}
             />
           </Route>
         </Route>

@@ -35,18 +35,18 @@ export default function Dashboard() {
       </h1>
       {/* ================= STATS CARDS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="text-gray-500 text-sm">Jobs Posted</h3>
-          <p className="text-3xl font-bold mt-2">{loading ? "-" : stats.jobsPosted}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="text-gray-500 text-sm">Resumes Screened</h3>
-          <p className="text-3xl font-bold mt-2">{loading ? "-" : stats.resumesScreened}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="text-gray-500 text-sm">Active Jobs</h3>
-          <p className="text-3xl font-bold mt-2">{loading ? "-" : stats.activeJobs}</p>
-        </div>
+        {["Jobs Posted", "Resumes Screened", "Active Jobs"].map((label, idx) => (
+          <div key={label} className="bg-white p-6 rounded-xl shadow">
+            <h3 className="text-gray-500 text-sm">{label}</h3>
+            {loading ? (
+              <div className="animate-pulse h-8 w-16 bg-gray-200 rounded mt-2" />
+            ) : (
+              <p className="text-3xl font-bold mt-2">
+                {idx === 0 ? stats.jobsPosted : idx === 1 ? stats.resumesScreened : stats.activeJobs}
+              </p>
+            )}
+          </div>
+        ))}
       </div>
       {/* ================= QUICK ACTIONS ================= */}
       <div className="bg-white p-6 rounded-xl shadow">
@@ -75,11 +75,21 @@ export default function Dashboard() {
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-xl font-bold mb-4">Recent Jobs</h2>
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <div className="space-y-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex justify-between items-center animate-pulse">
+                <div className="h-4 w-32 bg-gray-200 rounded" />
+                <div className="h-4 w-16 bg-gray-100 rounded" />
+              </div>
+            ))}
+          </div>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <div className="text-red-500 bg-red-50 p-3 rounded">{error || "Failed to load jobs."}</div>
         ) : recentJobs.length === 0 ? (
-          <p className="text-gray-500">No jobs posted yet.</p>
+          <div className="flex flex-col items-center text-gray-400 py-8">
+            <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+            <span>No jobs posted yet.</span>
+          </div>
         ) : (
           <ul className="space-y-3">
             {recentJobs.map((job, i) => (

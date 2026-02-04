@@ -3,9 +3,11 @@ import io
 import re
 import datetime
 from flask import Blueprint, request, jsonify
+from bson import ObjectId
 from models.resume_parser import extract_text, parse_resume
 from models.resume_score_model import compute_resume_job_score
 from temp_db import resumes, applications, jobs
+from database.db import jobs_col, resumes_col
 from utils.helpers import token_required
 
 recruiter_bulk_bp = Blueprint("recruiter_bulk", __name__)
@@ -38,16 +40,23 @@ def bulk_upload(_token_payload=None):
     Returns created application summaries.
     """
     recruiter_email = _token_payload.get("email")
-    job_id = request.form.get("job_id")
-    if not job_id:
+    job_id_raw = request.form.get("job_id")
+    if not job_id_raw:
         return jsonify({"error": "job_id is required in form data"}), 400
-    try:
-        job_id = int(job_id)
-    except ValueError:
-        return jsonify({"error": "job_id must be integer"}), 400
+    job = None
+    job_id = job_id_raw
 
-    # find job
-    job = next((j for j in jobs if j.get("job_id") == int(job_id)), None)
+    # Try MongoDB ObjectId job id first
+    if ObjectId.is_valid(job_id_raw):
+        job = jobs_col.find_one({"_id": ObjectId(job_id_raw)})
+    else:
+        # Fallback to in-memory temp_db jobs using integer job_id
+        try:
+            job_id_int = int(job_id_raw)
+        except ValueError:
+            return jsonify({"error": "job_id must be a valid ObjectId or integer"}), 400
+        job = next((j for j in jobs if j.get("job_id") == int(job_id_int)), None)
+        job_id = job_id_int
     if not job:
         return jsonify({"error": "Job not found"}), 404
 
@@ -84,9 +93,23 @@ def bulk_upload(_token_payload=None):
         }
         resumes.append(resume_entry)
 
+        # persist resume to Mongo (so /recruiter/screen can find it)
+        try:
+            resumes_col.insert_one({
+                "filename": getattr(f, "filename", None),
+                "candidate_email": extracted_email,
+                "parsed": parsed,
+                "parsed_text": parsed.get("raw_text", "") or text or "",
+                "uploaded_at": datetime.datetime.utcnow(),
+                "uploaded_by": recruiter_email,
+                "source": "bulk_upload"
+            })
+        except Exception as db_exc:
+            return jsonify({"error": "Database error: " + str(db_exc)}), 500
+
         # compute fit score
         resume_text = parsed.get("raw_text", "") or text or ""
-        job_desc = job.get("description", "")
+        job_desc = job.get("description", "") if job else ""
         fit_score = compute_resume_job_score(resume_text, job_desc)
 
         # candidate_email: use extracted email if present, else placeholder

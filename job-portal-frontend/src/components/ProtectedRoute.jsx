@@ -20,9 +20,15 @@ function getToken() {
  * @param {string[]} roles - Array of allowed roles ["candidate", "recruiter"]
  * @param {string} redirectTo - Path to redirect if unauthorized
  */
-export default function ProtectedRoute({ roles = [], redirectTo = "/login" }) {
+export default function ProtectedRoute({
+  roles = [],
+  role,
+  redirectTo = "/login",
+  children,
+}) {
   const token = getToken();
   const userRole = localStorage.getItem("role");
+  const allowedRoles = roles.length > 0 ? roles : role ? [role] : [];
 
   // No authentication token
   if (!token) {
@@ -30,10 +36,11 @@ export default function ProtectedRoute({ roles = [], redirectTo = "/login" }) {
   }
 
   // If route restricts roles → validate role
-  if (roles.length > 0 && !roles.includes(userRole)) {
-    return <Navigate to="/unauthorized" replace />;
+  if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    return <Navigate to={redirectTo} replace />;
   }
 
   // Access granted
+  if (children) return children;
   return <Outlet />;
 }

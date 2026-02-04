@@ -75,55 +75,53 @@ def iter_csv_rows(job_id, selected_fields, include_resume_snippet=True):
 @recruiter_export_bp.route("/export/<int:job_id>", methods=["GET"])
 @token_required(allowed_roles=["recruiter"])
 def export_applications(job_id, _token_payload=None):
-    """
-    Export job applications to CSV with customizable fields.
-    Query params:
-        fields=application_id,candidate_email,fit_score
-        OR fields=all
-        include_snippet=true|false (default true)
-    """
-    recruiter_email = _token_payload.get("email")
-    include_snippet = request.args.get("include_snippet", "true").lower() != "false"
+    try:
+        recruiter_email = _token_payload.get("email")
+        include_snippet = request.args.get("include_snippet", "true").lower() != "false"
 
-    # Determine selected fields
-    fields_param = request.args.get("fields", "all")
-    if fields_param.lower() == "all":
-        selected_fields = DEFAULT_FIELDS
-    else:
-        selected_fields = [f.strip() for f in fields_param.split(",") if f.strip()]
+        # Determine selected fields
+        fields_param = request.args.get("fields", "all")
+        if fields_param.lower() == "all":
+            selected_fields = DEFAULT_FIELDS
+        else:
+            selected_fields = [f.strip() for f in fields_param.split(",") if f.strip()]
+            # Validate fields
+            invalid = [f for f in selected_fields if f not in DEFAULT_FIELDS]
+            if invalid:
+                return jsonify({"error": "Invalid field(s): " + ", ".join(invalid)}), 400
 
-        # Validate fields
-        invalid = [f for f in selected_fields if f not in DEFAULT_FIELDS]
-        if invalid:
-            return jsonify({"error": "Invalid field(s): " + ", ".join(invalid)}), 400
+        # Ensure job exists
+        job = next((j for j in jobs if j.get("job_id") == int(job_id)), None)
+        if not job:
+            return jsonify({"error": "Job not found"}), 404
 
-    # Ensure job exists
-    job = next((j for j in jobs if j.get("job_id") == int(job_id)), None)
-    if not job:
-        return jsonify({"error": "Job not found"}), 404
+        # Enforce ownership if present
+        posted_by = job.get("posted_by")
+        if posted_by and posted_by.lower() != recruiter_email.lower():
+            return jsonify({"error": "Forbidden: you do not own this job"}), 403
 
-    # Enforce ownership if present
-    posted_by = job.get("posted_by")
-    if posted_by and posted_by.lower() != recruiter_email.lower():
-        return jsonify({"error": "Forbidden: you do not own this job"}), 403
+        # Stream CSV
+        def generate():
+            try:
+                buffer = io.StringIO()
+                writer = csv.writer(buffer)
+                for row in iter_csv_rows(job_id, selected_fields, include_resume_snippet=include_snippet):
+                    writer.writerow(row)
+                    buffer.seek(0)
+                    data = buffer.read()
+                    yield data
+                    buffer.truncate(0)
+                    buffer.seek(0)
+            except Exception as stream_exc:
+                # Streaming errors must be handled by aborting the response
+                yield ''
 
-    # Stream CSV
-    def generate():
-        buffer = io.StringIO()
-        writer = csv.writer(buffer)
+        filename = f"applications_job_{job_id}.csv"
+        headers = {
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Content-Type": "text/csv; charset=utf-8"
+        }
 
-        for row in iter_csv_rows(job_id, selected_fields, include_resume_snippet=include_snippet):
-            writer.writerow(row)
-            buffer.seek(0)
-            data = buffer.read()
-            yield data
-            buffer.truncate(0)
-            buffer.seek(0)
-
-    filename = f"applications_job_{job_id}.csv"
-    headers = {
-        "Content-Disposition": f'attachment; filename="{filename}"',
-        "Content-Type": "text/csv; charset=utf-8"
-    }
-
-    return Response(generate(), headers=headers)
+        return Response(generate(), headers=headers)
+    except Exception as exc:
+        return jsonify({"error": "Internal server error: " + str(exc)}), 500

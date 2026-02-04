@@ -1,12 +1,26 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiFetch } from "../../utils/api";
 
 export default function BulkUpload() {
   const [files, setFiles] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [jobId, setJobId] = useState("");
   const [uploading, setUploading] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        const data = await apiFetch("/recruiter/jobs");
+        setJobs(data.jobs || []);
+      } catch (err) {
+        setError(err.body?.error || "Failed to load jobs");
+      }
+    };
+    loadJobs();
+  }, []);
 
   const handleFileChange = (e) => {
     setFiles(Array.from(e.target.files));
@@ -19,12 +33,17 @@ export default function BulkUpload() {
       setError("Please select at least one resume.");
       return;
     }
+    if (!jobId) {
+      setError("Please select a job.");
+      return;
+    }
     setUploading(true);
     setResults([]);
     setError("");
     const newResults = [];
     for (const file of files) {
       const formData = new FormData();
+      formData.append("job_id", jobId);
       formData.append("resume", file);
       try {
         await apiFetch("/recruiter/bulk-upload", {
@@ -44,6 +63,18 @@ export default function BulkUpload() {
     <div className="max-w-2xl mx-auto space-y-6">
       <h2 className="text-3xl font-bold mb-6">Bulk Resume Upload</h2>
       <div className="bg-white p-6 rounded-xl shadow space-y-4">
+        <select
+          value={jobId}
+          onChange={(e) => setJobId(e.target.value)}
+          className="border p-3 w-full rounded bg-white"
+        >
+          <option value="">Select a job to screen for</option>
+          {jobs.map((job) => (
+            <option key={job.job_id} value={job.job_id}>
+              {job.title}
+            </option>
+          ))}
+        </select>
         <input
           type="file"
           multiple

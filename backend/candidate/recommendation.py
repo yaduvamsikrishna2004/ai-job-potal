@@ -4,11 +4,13 @@ from bson import ObjectId
 from database.db import resumes_col, jobs_col
 from models.match_model import compute_resume_job_score
 from models.embedding_model import compute_resume_vs_jobs
+from utils.auth_middleware import token_required
 
 candidate_recommend_bp = Blueprint("candidate_recommend", __name__)
 
 @candidate_recommend_bp.route("/recommend", methods=["POST"])
-def recommend_jobs():
+@token_required(allowed_roles=["candidate"])
+def recommend_jobs(current_user):
     """
     Input JSON:
     {
@@ -94,7 +96,6 @@ def recommend_jobs():
             "final_score": final_score
         })
 
-    # Sort & return only top_n
     final_list.sort(key=lambda x: -x["final_score"])
 
     return jsonify({

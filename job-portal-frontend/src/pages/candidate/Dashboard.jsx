@@ -43,26 +43,23 @@ export default function CandidateDashboard() {
 
       {/* ================= STATS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Uploaded Resumes</p>
-          <p className="text-3xl font-bold mt-2">{loading ? "-" : resumeCount}</p>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Job Recommendations</p>
-          <p className="text-3xl font-bold mt-2">{loading ? "-" : recommendations}</p>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Applications Submitted</p>
-          <p className="text-3xl font-bold mt-2">{loading ? "-" : applications}</p>
-        </div>
+        {["Uploaded Resumes", "Job Recommendations", "Applications Submitted"].map((label, idx) => (
+          <div key={label} className="bg-white p-6 rounded-xl shadow">
+            <p className="text-sm text-gray-500">{label}</p>
+            {loading ? (
+              <div className="animate-pulse h-8 w-16 bg-gray-200 rounded mt-2" />
+            ) : (
+              <p className="text-3xl font-bold mt-2">
+                {idx === 0 ? resumeCount : idx === 1 ? recommendations : applications}
+              </p>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* ================= QUICK ACTIONS ================= */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-
         <div className="flex flex-wrap gap-4">
           <Link
             to="/candidate/upload"
@@ -70,7 +67,6 @@ export default function CandidateDashboard() {
           >
             📄 Upload Resume
           </Link>
-
           <Link
             to="/candidate/recommend"
             className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
@@ -83,11 +79,22 @@ export default function CandidateDashboard() {
       {/* ================= RECENT RESUMES ================= */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-xl font-bold mb-4">Recent Resume Uploads</h2>
-
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <div className="space-y-2">
+            {[1, 2].map((i) => (
+              <div key={i} className="flex justify-between items-center animate-pulse">
+                <div className="h-4 w-32 bg-gray-200 rounded" />
+                <div className="h-4 w-16 bg-gray-100 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-red-500 bg-red-50 p-3 rounded">{error || "Failed to load resumes."}</div>
         ) : latestResumes.length === 0 ? (
-          <p className="text-gray-500">No resumes uploaded yet.</p>
+          <div className="flex flex-col items-center text-gray-400 py-8">
+            <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+            <span>No resumes uploaded yet.</span>
+          </div>
         ) : (
           <ul className="space-y-3">
             {latestResumes.map((res, index) => (

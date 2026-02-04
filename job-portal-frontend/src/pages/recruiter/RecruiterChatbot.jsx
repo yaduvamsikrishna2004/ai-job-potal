@@ -23,7 +23,7 @@ export default function RecruiterChatbot() {
       });
       setMessages((msgs) => [
         ...msgs,
-        { sender: "bot", text: data.reply || "Sorry, I didn't get that." },
+        { sender: "bot", text: data.reply || data.response || "Sorry, I didn't get that." },
       ]);
     } catch (err) {
       setMessages((msgs) => [

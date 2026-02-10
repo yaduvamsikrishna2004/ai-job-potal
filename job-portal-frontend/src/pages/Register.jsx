@@ -43,10 +43,13 @@ export default function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div className="relative flex items-center justify-center min-h-screen px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-100" />
+      <div className="absolute -top-24 -left-20 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+      <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-sky-200/40 blur-3xl" />
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 shadow-xl rounded-lg w-full max-w-md space-y-5 border"
+        className="panel p-8 w-full max-w-md space-y-5"
       >
         <h2 className="text-3xl font-bold text-center text-blue-700">
           Create Account
@@ -57,7 +60,7 @@ export default function Register() {
           <label className="font-semibold block mb-1">Full Name</label>
           <input
             type="text"
-            className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
+            className="border border-slate-200 p-2 w-full rounded-lg focus:ring focus:ring-blue-200 bg-white/80"
             placeholder="Your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -70,7 +73,7 @@ export default function Register() {
           <label className="font-semibold block mb-1">Email</label>
           <input
             type="email"
-            className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
+            className="border border-slate-200 p-2 w-full rounded-lg focus:ring focus:ring-blue-200 bg-white/80"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -83,7 +86,7 @@ export default function Register() {
           <label className="font-semibold block mb-1">Password</label>
           <input
             type="password"
-            className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
+            className="border border-slate-200 p-2 w-full rounded-lg focus:ring focus:ring-blue-200 bg-white/80"
             placeholder="Create a password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -121,8 +124,8 @@ export default function Register() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded text-white text-lg ${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+          className={`w-full py-2 rounded-lg text-white text-lg ${
+            loading ? "bg-gray-400" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600"
           }`}
         >
           {loading ? "Creating account..." : "Register"}

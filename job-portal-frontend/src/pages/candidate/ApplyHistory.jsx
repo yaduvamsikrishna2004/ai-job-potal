@@ -23,8 +23,13 @@ export default function ApplyHistory() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">My Applications</h1>
-      <div className="bg-white p-6 rounded-xl shadow w-full lg:w-2/3">
+      <div>
+        <h1 className="section-title">My Applications</h1>
+        <p className="section-subtitle mt-2">
+          Track the roles you’ve applied to and their status.
+        </p>
+      </div>
+      <div className="panel p-6 w-full lg:w-2/3">
         {loading ? (
           <p className="text-gray-500">Loading...</p>
         ) : error ? (
@@ -34,12 +39,12 @@ export default function ApplyHistory() {
         ) : (
           <ul className="space-y-3">
             {applications.map((app, i) => (
-              <li key={i} className="flex justify-between items-center border-b pb-2">
+              <li key={i} className="flex justify-between items-center border-b border-slate-200/70 pb-2">
                 <div>
                   <p className="font-semibold">{app.job_title}</p>
                   <p className="text-sm text-gray-500">Applied: {app.applied_at}</p>
                 </div>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Applied ✓</span>
+                <span className="chip bg-blue-100 text-blue-700">Applied</span>
               </li>
             ))}
           </ul>

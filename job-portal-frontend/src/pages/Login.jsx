@@ -61,14 +61,17 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div className="relative flex items-center justify-center min-h-screen px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-100" />
+      <div className="absolute -top-24 -left-20 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+      <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-sky-200/40 blur-3xl" />
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 shadow-xl rounded-lg w-full max-w-md space-y-5 border"
+        className="panel p-8 w-full max-w-md space-y-5"
       >
         {/* Title */}
         <h2 className="text-3xl font-bold text-center text-blue-700">
-          Login to AI Job Portal
+          Login to JobFit Engine
         </h2>
 
         <p className="text-center text-gray-500 text-sm">
@@ -77,11 +80,11 @@ export default function Login() {
 
         {/* Email */}
         <div>
-          <label className="font-semibold block mb-1">Email</label>
+          <label className="font-semibold block mb-1 text-slate-700">Email</label>
           <input
             type="email"
             placeholder="you@example.com"
-            className="border p-2 w-full rounded focus:ring focus:ring-blue-200 outline-none"
+            className="border border-slate-200 p-2 w-full rounded-lg focus:ring focus:ring-blue-200 outline-none bg-white/80"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -90,22 +93,22 @@ export default function Login() {
 
         {/* Password */}
         <div>
-          <label className="font-semibold block mb-1">Password</label>
+          <label className="font-semibold block mb-1 text-slate-700">Password</label>
           <div className="relative">
             <input
               type={showPass ? "text" : "password"}
               placeholder="Enter your password"
-              className="border p-2 w-full rounded focus:ring focus:ring-blue-200 outline-none"
+              className="border border-slate-200 p-2 w-full rounded-lg focus:ring focus:ring-blue-200 outline-none bg-white/80"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button
               type="button"
-              className="absolute right-3 top-2.5 text-gray-500"
+              className="absolute right-3 top-2.5 text-gray-500 text-xs font-semibold"
               onClick={() => setShowPass(!showPass)}
             >
-              {showPass ? "🙈" : "👁️"}
+              {showPass ? "Hide" : "Show"}
             </button>
           </div>
         </div>
@@ -114,8 +117,8 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded text-white text-lg transition ${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+          className={`w-full py-2 rounded-lg text-white text-lg transition ${
+            loading ? "bg-gray-400" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600"
           }`}
         >
           {loading ? "Logging in..." : "Login"}

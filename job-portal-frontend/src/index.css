@@ -1,9 +1,72 @@
 /* Enable Tailwind */
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 
-/* Optional: Custom global overrides */
+:root {
+  --bg-0: #f8fafc;
+  --bg-1: #eef2ff;
+  --bg-2: #ecfeff;
+  --ink-0: #0f172a;
+  --ink-1: #334155;
+  --accent-0: #2563eb;
+  --accent-1: #0ea5e9;
+  --accent-2: #10b981;
+  --ring: rgba(37, 99, 235, 0.25);
+}
+
 body {
   margin: 0;
-  background-color: #f3f4f6; /* Tailwind gray-100 */
-  font-family: system-ui, sans-serif;
+  color: var(--ink-0);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, var(--bg-1), transparent 60%),
+    radial-gradient(1000px 600px at -10% 10%, var(--bg-2), transparent 55%),
+    var(--bg-0);
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen text-slate-900;
+  }
+
+  .panel {
+    @apply bg-white/90 backdrop-blur border border-slate-200/70 rounded-2xl shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)];
+  }
+
+  .panel-soft {
+    @apply bg-white/70 backdrop-blur border border-slate-200/70 rounded-2xl;
+  }
+
+  .section-title {
+    @apply text-2xl md:text-3xl font-semibold text-slate-900;
+  }
+
+  .section-subtitle {
+    @apply text-sm text-slate-500;
+  }
+
+  .kpi-card {
+    @apply bg-white/90 backdrop-blur border border-slate-200/70 rounded-2xl shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] p-5 md:p-6 flex flex-col gap-2;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition bg-blue-600 text-white hover:bg-blue-700 shadow-[0_12px_24px_-12px_rgba(37,99,235,0.6)];
+  }
+
+  .btn-purple {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition bg-purple-600 text-white hover:bg-purple-700 shadow-[0_12px_24px_-12px_rgba(147,51,234,0.6)];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition border border-slate-300 text-slate-700 hover:bg-slate-50;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+  }
 }

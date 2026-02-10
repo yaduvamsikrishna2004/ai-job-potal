@@ -33,10 +33,8 @@ export default function CandidateDashboard() {
     <div className="space-y-8">
       {/* ================= PAGE HEADER ================= */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">
-          Candidate Dashboard
-        </h1>
-        <p className="text-gray-600 mt-1">
+        <h1 className="section-title">Candidate Dashboard</h1>
+        <p className="section-subtitle mt-2">
           Manage your resumes and explore AI-powered job matches
         </p>
       </div>
@@ -44,8 +42,8 @@ export default function CandidateDashboard() {
       {/* ================= STATS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {["Uploaded Resumes", "Job Recommendations", "Applications Submitted"].map((label, idx) => (
-          <div key={label} className="bg-white p-6 rounded-xl shadow">
-            <p className="text-sm text-gray-500">{label}</p>
+          <div key={label} className="kpi-card">
+            <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
             {loading ? (
               <div className="animate-pulse h-8 w-16 bg-gray-200 rounded mt-2" />
             ) : (
@@ -58,18 +56,18 @@ export default function CandidateDashboard() {
       </div>
 
       {/* ================= QUICK ACTIONS ================= */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+      <div className="panel p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-4">
           <Link
             to="/candidate/upload"
-            className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
+            className="btn-primary"
           >
             📄 Upload Resume
           </Link>
           <Link
             to="/candidate/recommend"
-            className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
+            className="btn-primary"
           >
             🤖 View Recommendations
           </Link>
@@ -77,8 +75,8 @@ export default function CandidateDashboard() {
       </div>
 
       {/* ================= RECENT RESUMES ================= */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4">Recent Resume Uploads</h2>
+      <div className="panel p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Resume Uploads</h2>
         {loading ? (
           <div className="space-y-2">
             {[1, 2].map((i) => (
@@ -98,7 +96,7 @@ export default function CandidateDashboard() {
         ) : (
           <ul className="space-y-3">
             {latestResumes.map((res, index) => (
-              <li key={index} className="flex justify-between items-center border-b pb-2">
+              <li key={index} className="flex justify-between items-center border-b border-slate-200/70 pb-2">
                 <span>{res.name}</span>
                 <span className="text-sm text-gray-400">{res.uploadedAt}</span>
               </li>

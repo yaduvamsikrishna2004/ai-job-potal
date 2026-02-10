@@ -8,7 +8,7 @@ export default function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold text-blue-600">
-          AI Job Portal
+          JobFit Engine
         </Link>
 
         {/* Links */}

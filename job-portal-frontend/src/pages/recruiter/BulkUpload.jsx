@@ -60,13 +60,18 @@ export default function BulkUpload() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <h2 className="text-3xl font-bold mb-6">Bulk Resume Upload</h2>
-      <div className="bg-white p-6 rounded-xl shadow space-y-4">
+    <div className="mx-auto max-w-3xl space-y-6">
+      <div>
+        <h2 className="section-title">Bulk Resume Upload</h2>
+        <p className="section-subtitle mt-2">
+          Upload multiple resumes and link them to a specific role.
+        </p>
+      </div>
+      <div className="panel p-6 space-y-4">
         <select
           value={jobId}
           onChange={(e) => setJobId(e.target.value)}
-          className="border p-3 w-full rounded bg-white"
+          className="w-full rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
         >
           <option value="">Select a job to screen for</option>
           {jobs.map((job) => (
@@ -80,12 +85,12 @@ export default function BulkUpload() {
           multiple
           accept=".pdf,.doc,.docx"
           onChange={handleFileChange}
-          className="border p-3 w-full rounded"
+          className="w-full rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-sm shadow-sm"
         />
         <button
           onClick={handleUpload}
           disabled={uploading}
-          className={`px-4 py-2 rounded-lg text-white ${uploading ? "bg-gray-400" : "bg-purple-600 hover:bg-purple-700"}`}
+          className={`${uploading ? "btn-outline" : "btn-purple"}`}
         >
           {uploading ? "Uploading..." : "Upload Resumes"}
         </button>
@@ -96,7 +101,7 @@ export default function BulkUpload() {
               <li key={i} className="flex justify-between items-center border-b pb-2">
                 <span>{r.name}</span>
                 {r.status === "success" ? (
-                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Uploaded ✓</span>
+                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">Uploaded ✓</span>
                 ) : (
                   <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Failed: {r.message}</span>
                 )}

@@ -30,14 +30,12 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Page Title */}
-      <h1 className="text-3xl font-bold text-gray-800">
-        Recruiter Dashboard
-      </h1>
+      <h1 className="section-title">Recruiter Dashboard</h1>
       {/* ================= STATS CARDS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {["Jobs Posted", "Resumes Screened", "Active Jobs"].map((label, idx) => (
-          <div key={label} className="bg-white p-6 rounded-xl shadow">
-            <h3 className="text-gray-500 text-sm">{label}</h3>
+          <div key={label} className="kpi-card">
+            <h3 className="text-xs uppercase tracking-wide text-slate-500">{label}</h3>
             {loading ? (
               <div className="animate-pulse h-8 w-16 bg-gray-200 rounded mt-2" />
             ) : (
@@ -49,31 +47,31 @@ export default function Dashboard() {
         ))}
       </div>
       {/* ================= QUICK ACTIONS ================= */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+      <div className="panel p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-4">
           <Link
             to="/recruiter/post-job"
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="btn-primary"
           >
-             Post New Job
+            Post New Job
           </Link>
           <Link            to="/recruiter/screen"
-            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            className="btn-purple"
           >
-             Screen Candidates
+            Screen Candidates
           </Link>
           <Link
             to="/recruiter/bulk-upload"
-            className="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            className="btn-outline"
           >
-             Bulk Resume Upload
+            Bulk Resume Upload
           </Link>
         </div>
       </div>
       {/* ================= RECENT JOBS ================= */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4">Recent Jobs</h2>
+      <div className="panel p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Jobs</h2>
         {loading ? (
           <div className="space-y-2">
             {[1, 2, 3].map((i) => (
@@ -93,7 +91,7 @@ export default function Dashboard() {
         ) : (
           <ul className="space-y-3">
             {recentJobs.map((job, i) => (
-              <li key={i} className="flex justify-between items-center border-b pb-2">
+              <li key={i} className="flex justify-between items-center border-b border-slate-200/70 pb-2">
                 <span>{job.title}</span>
                 <span className="text-sm text-gray-400">{job.posted_on || job.created_at || ""}</span>
               </li>

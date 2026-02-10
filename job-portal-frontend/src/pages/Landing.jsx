@@ -15,7 +15,7 @@ export default function Landing() {
               Hire the <span className="text-purple-600">Right Talent</span>.
             </h1>
             <div className="mt-4 flex gap-2">
-              <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">AI Matching</span>
+              <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">AI Matching</span>
               <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Resume Parsing</span>
               <span className="inline-block bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full">Role-based Access</span>
             </div>
@@ -70,8 +70,8 @@ export default function Landing() {
             </div>
             {/* Service 2 */}
             <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition flex items-start gap-4">
-              <div className="bg-green-50 p-3 rounded-full">
-                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m4 4v-4a4 4 0 00-4-4H7a4 4 0 00-4 4v4a4 4 0 004 4h4" /></svg>
+              <div className="bg-blue-50 p-3 rounded-full">
+                <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m4 4v-4a4 4 0 00-4-4H7a4 4 0 00-4 4v4a4 4 0 004 4h4" /></svg>
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">Job Recommendation</h3>
@@ -93,7 +93,7 @@ export default function Landing() {
           <div className="flex justify-center gap-6">
             <Link
               to="/register"
-              className="px-6 py-3 bg-green-600 text-white rounded text-lg font-semibold shadow hover:bg-green-700 transition"
+              className="px-6 py-3 bg-blue-600 text-white rounded text-lg font-semibold shadow hover:bg-blue-700 transition"
             >
               I'm a Candidate
             </Link>
@@ -117,7 +117,7 @@ export default function Landing() {
               <span className="text-xs text-gray-400">— Priya S., Candidate</span>
             </div>
             <div className="bg-white rounded-xl p-6 shadow flex flex-col items-center">
-              <svg className="w-10 h-10 text-green-500 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              <svg className="w-10 h-10 text-blue-500 mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
               <p className="text-gray-700 text-center mb-2">“Bulk resume upload and AI screening saved us hours every week.”</p>
               <span className="text-xs text-gray-400">— Rahul M., Recruiter</span>
             </div>

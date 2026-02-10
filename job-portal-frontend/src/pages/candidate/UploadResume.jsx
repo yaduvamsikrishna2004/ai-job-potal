@@ -82,16 +82,21 @@ export default function UploadResume() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">Upload Resumes</h1>
+      <div>
+        <h1 className="section-title">Upload Resumes</h1>
+        <p className="section-subtitle mt-2">
+          Keep your resume library up to date for smarter recommendations.
+        </p>
+      </div>
 
       {/* Upload Card */}
-      <div className="bg-white p-6 w-full lg:w-2/3 rounded-xl shadow space-y-5">
+      <div className="panel p-6 w-full lg:w-2/3 space-y-5">
         <input
           type="file"
           multiple
           accept=".pdf,.doc,.docx"
           onChange={handleFileChange}
-          className="border p-3 w-full rounded"
+          className="w-full rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-sm shadow-sm"
         />
 
         {files.length > 0 && (
@@ -106,31 +111,29 @@ export default function UploadResume() {
           <button
             onClick={handleUpload}
             disabled={uploading}
-            className={`px-4 py-2 rounded-lg text-white ${
-              uploading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-            }`}
+            className={`${uploading ? "btn-outline" : "btn-primary"}`}
           >
             {uploading ? "Uploading..." : "Upload Resume(s)"}
           </button>
 
           <button
             onClick={handleClear}
-            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+            className="btn-outline"
           >
             Clear
           </button>
         </div>
 
         {message && (
-          <div className="bg-green-100 text-green-700 border border-green-300 p-3 rounded-lg">
+          <div className="bg-blue-100 text-blue-700 border border-blue-300 p-3 rounded-lg">
             {message}
           </div>
         )}
       </div>
 
       {/* Uploaded Resume List */}
-      <div className="bg-white p-6 w-full lg:w-2/3 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4">My Uploaded Resumes</h2>
+      <div className="panel p-6 w-full lg:w-2/3">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">My Uploaded Resumes</h2>
         {error && (
           <div className="bg-red-100 text-red-700 border border-red-300 p-2 rounded mb-2">{error}</div>
         )}
@@ -141,7 +144,7 @@ export default function UploadResume() {
             {resumes.map((r, i) => (
               <li
                 key={i}
-                className="flex justify-between items-center border-b pb-2"
+                className="flex justify-between items-center border-b border-slate-200/70 pb-2"
               >
                 <div>
                   <p className="font-semibold">{r.name}</p>

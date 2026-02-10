@@ -58,8 +58,13 @@ export default function ScreenCandidates() {
   });
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6">Screen Candidates</h2>
+    <div className="space-y-6">
+      <div>
+        <h2 className="section-title">Screen Candidates</h2>
+        <p className="section-subtitle mt-2">
+          Rank applicants using AI similarity scores and skill overlap.
+        </p>
+      </div>
       {/* Alerts */}
       {alert.message && (
         <div
@@ -68,15 +73,15 @@ export default function ScreenCandidates() {
               ? "bg-red-100 text-red-700 border border-red-300"
               : alert.type === "warning"
               ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
-              : "bg-green-100 text-green-700 border border-green-300"
+              : "bg-purple-100 text-purple-700 border border-purple-300"
           }`}
         >
           {alert.message}
         </div>
       )}
       {/* Job Selector */}
-      <div className="bg-white p-5 rounded shadow border mb-6 w-2/3">
-        <label className="font-semibold block mb-1">Select Job</label>
+      <div className="panel p-6">
+        <label className="text-sm font-semibold text-slate-700">Select Job</label>
         {loading ? (
           <div className="text-gray-500">Loading jobs...</div>
         ) : jobs.length === 0 ? (
@@ -85,7 +90,7 @@ export default function ScreenCandidates() {
           <select
             value={jobId}
             onChange={(e) => setJobId(e.target.value)}
-            className="border p-2 rounded w-full"
+            className="mt-2 w-full rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
           >
             <option value="">-- Select job --</option>
             {jobs.map((job) => (
@@ -98,17 +103,15 @@ export default function ScreenCandidates() {
         <button
           onClick={handleScreen}
           disabled={loading || !jobId}
-          className={`mt-4 px-4 py-2 rounded text-white ${
-            loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"}
-          }`}
+          className={`mt-4 ${loading ? "btn-outline" : "btn-purple"}`}
         >
           {loading ? "Screening..." : "Screen Candidates"}
         </button>
       </div>
       {/* Results */}
-      <div className="bg-white p-5 rounded shadow border w-2/3">
+      <div className="panel p-6">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-bold">Results</h3>
+          <h3 className="text-lg font-semibold text-slate-900">Results</h3>
           {results.length > 0 && (
             <button
               className="text-xs text-blue-600 underline"
@@ -125,22 +128,22 @@ export default function ScreenCandidates() {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-1">Resume / Candidate</th>
-                <th className="text-left py-1">Score</th>
-                <th className="text-left py-1">Rank</th>
+              <tr className="border-b border-slate-200/70 text-slate-500">
+                <th className="text-left py-2">Resume / Candidate</th>
+                <th className="text-left py-2">Score</th>
+                <th className="text-left py-2">Rank</th>
               </tr>
             </thead>
             <tbody>
               {sortedResults.map((c, i) => (
-                <tr key={i} className="border-b">
-                  <td className="py-1">{c.candidate_email || c.resume_id || c.candidate_id || "-"}</td>
-                  <td className="py-1">
+                <tr key={i} className="border-b border-slate-200/60">
+                  <td className="py-2">{c.candidate_email || c.resume_id || c.candidate_id || "-"}</td>
+                  <td className="py-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-32 bg-gray-200 rounded h-3 overflow-hidden">
+                      <div className="w-32 bg-slate-200 rounded-full h-2 overflow-hidden">
                         <div
                           className={`h-3 rounded ${
-                            c.score >= 80 ? "bg-green-500" : c.score >= 50 ? "bg-yellow-400" : "bg-red-400"}
+                            c.score >= 80 ? "bg-purple-500" : c.score >= 50 ? "bg-yellow-400" : "bg-red-400"}
                           }`}
                           style={{ width: `${Math.round(c.score ?? 0)}%` }}
                         ></div>
@@ -148,7 +151,7 @@ export default function ScreenCandidates() {
                       <span
                         className={`px-2 py-1 rounded text-xs font-bold ${
                           c.score >= 80
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-purple-100 text-purple-700"
                             : c.score >= 50
                             ? "bg-yellow-100 text-yellow-700"
                             : "bg-red-100 text-red-700"

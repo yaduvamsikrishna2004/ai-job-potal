@@ -17,7 +17,7 @@ export default function AppLayout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="app-shell flex min-h-screen">
 
       {/* Sidebar (hidden on mobile if toggled) */}
       <div
@@ -33,30 +33,36 @@ export default function AppLayout() {
         {/* Navbar with toggle button */}
         <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
         {/* Page content */}
-        <main className="flex-1 p-6">
-          <Outlet />
+        <main className="flex-1 px-4 pb-16 pt-8 md:px-8">
+          <div className="mx-auto w-full max-w-6xl space-y-8">
+            <Outlet />
+          </div>
         </main>
         {/* Candidate/Recruiter Chatbot Floating Button */}
         {role === "candidate" && (
           <>
             <button
-              className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-blue-700 focus:outline-none"
+              className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-[0_18px_32px_-16px_rgba(37,99,235,0.7)] flex items-center justify-center text-2xl hover:from-blue-700 hover:to-sky-600 focus:outline-none"
               style={{ display: showChatbot ? "none" : "flex" }}
               onClick={() => setShowChatbot(true)}
               aria-label="Open Chatbot"
             >
-              🤖
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+              </svg>
             </button>
             {showChatbot && (
               <div className="z-50">
-                <Chatbot />
-                <button
-                  className="fixed bottom-102 right-6 bg-gray-200 text-gray-700 rounded-full px-3 py-1 text-xs shadow hover:bg-gray-300"
-                  onClick={() => setShowChatbot(false)}
-                  aria-label="Close Chatbot"
-                >
-                  Close
-                </button>
+                <Chatbot onClose={() => setShowChatbot(false)} />
               </div>
             )}
           </>
@@ -64,23 +70,27 @@ export default function AppLayout() {
         {role === "recruiter" && (
           <>
             <button
-              className="fixed bottom-6 right-6 z-50 bg-purple-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-purple-700 focus:outline-none"
+              className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-purple-600 to-fuchsia-500 text-white shadow-[0_18px_32px_-16px_rgba(147,51,234,0.7)] flex items-center justify-center text-2xl hover:from-purple-700 hover:to-fuchsia-600 focus:outline-none"
               style={{ display: showChatbot ? "none" : "flex" }}
               onClick={() => setShowChatbot(true)}
               aria-label="Open Recruiter Chatbot"
             >
-              🤖
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+              </svg>
             </button>
             {showChatbot && (
               <div className="z-50">
-                <RecruiterChatbot />
-                <button
-                  className="fixed bottom-102 right-6 bg-gray-200 text-gray-700 rounded-full px-3 py-1 text-xs shadow hover:bg-gray-300"
-                  onClick={() => setShowChatbot(false)}
-                  aria-label="Close Recruiter Chatbot"
-                >
-                  Close
-                </button>
+                <RecruiterChatbot onClose={() => setShowChatbot(false)} />
               </div>
             )}
           </>

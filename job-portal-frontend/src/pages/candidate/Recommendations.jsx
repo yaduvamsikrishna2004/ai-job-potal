@@ -78,20 +78,23 @@ export default function Recommendations() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">
-        Job Recommendations
-      </h1>
+      <div>
+        <h1 className="section-title">Job Recommendations</h1>
+        <p className="section-subtitle mt-2">
+          Pick a resume to get ranked roles that fit your profile.
+        </p>
+      </div>
 
       {/* Resume Selector */}
-      <div className="bg-white p-6 rounded-xl shadow w-full lg:w-2/3">
-        <label className="block font-semibold mb-2">
+      <div className="panel p-6 w-full lg:w-2/3">
+        <label className="block text-sm font-semibold text-slate-700 mb-2">
           Select Resume
         </label>
 
         <select
           value={resumeId}
           onChange={(e) => setResumeId(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="w-full rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
         >
           <option value="">-- Select resume --</option>
           {resumes.map((r, i) => (
@@ -104,9 +107,7 @@ export default function Recommendations() {
         <button
           onClick={handleRecommend}
           disabled={loading}
-          className={`mt-4 px-4 py-2 rounded text-white ${
-            loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-          }`}
+          className={`mt-4 ${loading ? "btn-outline" : "btn-primary"}`}
         >
           {loading ? "Loading..." : "Get Recommendations"}
         </button>
@@ -127,30 +128,30 @@ export default function Recommendations() {
         {recommendations.map((job) => (
           <div
             key={job.job_id}
-            className="bg-white p-5 rounded-xl shadow border flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+            className="panel p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
             <div>
               <h3 className="text-xl font-bold">{job.title}</h3>
               <div className="flex flex-wrap gap-2 mt-2">
                 {job.skills && job.skills.map((skill, i) => (
-                  <span key={i} className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs">{skill}</span>
+                  <span key={i} className="chip bg-slate-100 text-slate-700">{skill}</span>
                 ))}
               </div>
               <p className="text-gray-600 mt-2">{job.description}</p>
               <div className="mt-3 text-sm">
-                <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full mr-2">
+                <span className="chip bg-blue-100 text-blue-700 mr-2">
                   Score: {job.final_score ?? job.embedding_score}
                 </span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-2 min-w-[120px]">
               {appliedJobs[job.job_id] ? (
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">Applied ✓</span>
+                <span className="chip bg-blue-100 text-blue-700 text-sm">Applied</span>
               ) : (
                 <button
                   onClick={() => handleApply(job)}
                   disabled={!!applying || applying === job.job_id}
-                  className={`px-4 py-2 rounded text-white ${applying === job.job_id ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"}`}
+                  className={`${applying === job.job_id ? "btn-outline" : "btn-primary"}`}
                 >
                   {applying === job.job_id ? "Applying..." : "Apply"}
                 </button>
